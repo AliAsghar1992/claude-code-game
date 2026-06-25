@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>OPERATOR // Claude Code</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root{
+  --bg:#05060a; --bg2:#0b0d14;
+  --panel:rgba(18,22,31,.74); --panel2:rgba(28,33,45,.82);
+  --bdr:rgba(255,255,255,.07); --bdr2:rgba(255,255,255,.18);
+  --g:#35e07e; --gg:rgba(53,224,126,.45);
+  --a:#ffb02e; --ad:rgba(255,176,46,.13);
+  --pk:#ff2e74; --pkk:rgba(255,46,116,.4);
+  --r:#ff4d57; --rd:rgba(255,77,87,.1);
+  --c:#3fb9ff; --cd:rgba(63,185,255,.1);
+  --p:#b08bff; --pd:rgba(176,139,255,.12);
+  --w:#f3f7ff; --t:#bac4d4; --dim:#69748a; --dim2:#8b95a8;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{
+  background:
+    radial-gradient(circle at 50% -10%, rgba(255,176,46,.07), transparent 45%),
+    radial-gradient(circle at 85% 110%, rgba(255,46,116,.08), transparent 50%),
+    var(--bg);
+  color:var(--t);
+  font-family:'Inter',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9500;
+  background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9600;opacity:.05;
+  mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.S{position:fixed;inset:0;display:none;flex-direction:column;z-index:100;overflow-y:auto}
+.S.on{display:flex;animation:scrIn .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes scrIn{from{opacity:0;transform:scale(1.015) translateY(8px)}to{opacity:1;transform:none}}
+
+#ptc{position:fixed;inset:0;pointer-events:none;z-index:9000}
+
+.toast-stack{position:fixed;top:18px;right:18px;z-index:8000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{
+  padding:13px 20px;border-radius:10px;font-size:12px;font-weight:600;letter-spacing:.5px;
+  display:flex;align-items:center;gap:12px;max-width:350px;position:relative;overflow:hidden;
+  background:var(--panel2);backdrop-filter:blur(16px);border:1px solid var(--bdr2);
+  box-shadow:0 12px 40px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
+  animation:toastIn .4s cubic-bezier(.2,.9,.2,1), toastOut .4s ease-in 2.6s forwards;
+}
+.toast .t-icon{font-size:22px;filter:drop-shadow(0 0 8px currentColor)}
+.toast .t-body{flex:1}
+.toast .t-title{font-family:'Chakra Petch',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px}
+.toast .t-sub{font-size:10px;opacity:.65;margin-top:2px;letter-spacing:.5px}
+.toast::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:10px 0 0 10px}
+.toast.ach{color:var(--a)} .toast.ach::before{background:var(--a);box-shadow:0 0 16px var(--a)}
+.toast.rank{color:var(--g)} .toast.rank::before{background:var(--g);box-shadow:0 0 16px var(--g)}
+.toast.cash{color:var(--c)} .toast.cash::before{background:var(--c);box-shadow:0 0 16px var(--c)}
+@keyframes toastIn{from{transform:translateX(120px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes toastOut{to{transform:translateX(120px);opacity:0}}
+
+#S-title{align-items:center;justify-content:center;gap:8px;padding:24px;text-align:center;position:relative;background:linear-gradient(180deg, #06070c 0%, #08060f 32%, rgba(26,18,56,.45) 56%, transparent 100%), radial-gradient(ellipse 110% 55% at 50% 102%, rgba(255,120,70,.55), transparent 64%), radial-gradient(circle at 50% 90%, #ff6a8a 0%, #ff9a4d 13%, transparent 38%), linear-gradient(180deg, #0a0a16 0%, #1a1238 46%, #5e2a5e 72%, #b5454f 90%, #ff8a52 100%)}
+/* letterbox bars removed - were overlapping content */
+.hero-pre{font-family:'Chakra Petch',sans-serif;font-size:13px;letter-spacing:11px;color:#c2cad8;margin-bottom:2px;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.hero{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,14vw,124px);letter-spacing:4px;line-height:.9;color:#fff;position:relative;animation:heroPulse 3.6s ease-in-out infinite}
+.hero span{-webkit-text-fill-color:#fff;color:#fff}
+@keyframes heroPulse{0%,100%{text-shadow:0 0 7px rgba(255,255,255,.4),0 0 22px rgba(255,46,116,.6),0 0 46px rgba(63,185,255,.4)}50%{text-shadow:0 0 11px rgba(255,255,255,.6),0 0 34px rgba(255,46,116,.85),0 0 70px rgba(63,185,255,.6)}}
+@keyframes sheen{to{background-position:200% center}}
+.hero-tag{font-size:12px;letter-spacing:7px;color:#ffd9a8;margin-bottom:34px;text-shadow:0 2px 12px rgba(0,0,0,.75)}
+.name-in{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;text-align:center;background:var(--panel);backdrop-filter:blur(10px);border:1.5px solid var(--bdr2);color:var(--a);padding:13px 26px;border-radius:8px;outline:none;width:min(300px,80vw);letter-spacing:3px;transition:.25s;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.name-in:focus{border-color:var(--a);box-shadow:0 0 0 4px var(--ad),inset 0 1px 0 rgba(255,255,255,.06)}
+.name-in::placeholder{color:var(--dim)}
+.name-hint{font-size:10px;color:#bcc6d6;letter-spacing:4px;margin:8px 0 22px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.title-reset{position:absolute;bottom:16px;right:18px;background:rgba(10,8,18,.5);border:1px solid rgba(255,255,255,.16);color:#9aa4b6;font-size:9px;letter-spacing:2px;padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'Chakra Petch',sans-serif;z-index:5;backdrop-filter:blur(6px)}
+.title-reset:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+.title-foot{position:absolute;bottom:8%;left:0;right:0;display:flex;gap:9px;justify-content:center;flex-wrap:wrap;padding:0 20px;z-index:3}
+.title-foot span{font-family:'Chakra Petch',sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;color:#ffdcab;padding:7px 15px;border:1px solid rgba(255,176,46,.4);border-radius:30px;background:rgba(10,8,18,.45);backdrop-filter:blur(6px);text-shadow:0 1px 5px rgba(0,0,0,.7)}
+
+.B{font-family:'Chakra Petch',sans-serif;font-size:14px;font-weight:700;letter-spacing:3px;padding:13px 44px;border:none;border-radius:7px;cursor:pointer;transition:.18s;text-transform:uppercase;position:relative;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.18)}
+.B::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.22),transparent 45%);pointer-events:none}
+.B:hover{transform:translateY(-2px)}
+.B:active{transform:translateY(0)}
+.B.g{background:linear-gradient(180deg,#47f08c,var(--g));color:#04130a}
+.B.g:hover{box-shadow:0 8px 30px var(--gg),inset 0 1px 0 rgba(255,255,255,.3)}
+.B.a{background:linear-gradient(180deg,#ffc251,var(--a));color:#1c1304}
+.B.a:hover{box-shadow:0 8px 30px var(--ad)}
+.B.dim{background:linear-gradient(180deg,#2a3140,#1b2230);color:var(--t);box-shadow:0 4px 14px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08)}
+.B.sm{font-size:11px;padding:8px 18px;letter-spacing:2px}
+.B.outline{background:transparent;border:1.5px solid var(--bdr2);color:var(--dim2);box-shadow:none}
+.B.outline:hover{border-color:var(--g);color:var(--g)}
+.B:disabled{opacity:.3;cursor:default;transform:none;box-shadow:none}
+
+#S-hq{padding:18px;width:100%}
+.hq-top{display:flex;align-items:center;justify-content:space-between;padding:0 2px;margin-bottom:18px}
+.hq-rank-badge{display:flex;align-items:center;gap:12px;padding:9px 16px;border-radius:10px;background:var(--panel);backdrop-filter:blur(12px);border:1px solid var(--bdr);border-left:3px solid var(--a);box-shadow:0 6px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.05)}
+.rank-icon{font-size:26px;filter:drop-shadow(0 0 10px rgba(255,176,46,.5))}
+.rank-title{font-family:'Chakra Petch',sans-serif;font-size:15px;font-weight:700;color:var(--a);letter-spacing:2px}
+.rank-sub{font-size:9px;color:var(--dim);letter-spacing:3px}
+.hq-cash{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--g);display:flex;align-items:center;gap:6px;text-shadow:0 0 24px var(--gg);letter-spacing:1px}
+.hq-cash .dollar{color:var(--dim2);font-size:20px}
+
+.xp-wrap{margin-bottom:18px;padding:0 2px}
+.xp-meta{display:flex;justify-content:space-between;font-size:9px;color:var(--dim);letter-spacing:2px;margin-bottom:5px;font-family:'Chakra Petch',sans-serif;font-weight:600}
+.xp-track{height:9px;background:rgba(0,0,0,.4);border-radius:6px;overflow:hidden;border:1px solid var(--bdr)}
+.xp-fill{height:100%;border-radius:6px;transition:width .6s cubic-bezier(.2,.8,.2,1);background:linear-gradient(90deg,var(--a),var(--pk));box-shadow:0 0 14px var(--pkk)}
+
+.stats-row{display:flex;gap:10px;margin-bottom:18px;padding:0 2px}
+.stat-card{flex:1;min-width:78px;border-radius:10px;padding:12px;text-align:center;background:var(--panel);backdrop-filter:blur(10px);border:1px solid var(--bdr);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.stat-card .sv{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--w);line-height:1}
+.stat-card .sl{font-size:8px;letter-spacing:2px;color:var(--dim);font-weight:700}
+
+.hq-tabs{display:flex;gap:6px;margin-bottom:16px;padding:0 2px}
+.hq-tab{flex:1;padding:10px;text-align:center;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--dim2);background:var(--panel);border:1px solid var(--bdr);border-radius:8px;cursor:pointer;transition:.18s;font-family:'Chakra Petch',sans-serif}
+.hq-tab:hover{color:var(--t);border-color:var(--bdr2)}
+.hq-tab.on{color:#04130a;background:linear-gradient(180deg,#47f08c,var(--g));border-color:transparent;box-shadow:0 4px 16px var(--gg)}
+
+.hq-panel{display:none;padding:0 2px}
+.hq-panel.on{display:block;animation:scrIn .35s ease}
+.ch-label{font-family:'Chakra Petch',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;color:var(--a);margin:18px 0 8px;padding-left:2px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.ch-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--ad),transparent)}
+
+.m-row{display:flex;align-items:center;gap:12px;padding:13px 16px;margin-bottom:8px;border-radius:10px;background:var(--panel);backdrop-filter:blur(8px);border:1px solid var(--bdr);cursor:pointer;transition:.18s;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.m-row:hover:not(.locked){border-color:var(--bdr2);transform:translateX(4px);box-shadow:0 6px 22px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06)}
+.m-row.locked{opacity:.28;cursor:default;pointer-events:none}
+.m-row.boss{border-color:rgba(255,77,87,.28);background:linear-gradient(100deg,var(--panel),var(--rd))}
+.m-row.boss:hover{border-color:var(--r);box-shadow:0 6px 26px rgba(255,77,87,.2)}
+.m-num{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--dim);min-width:26px}
+.m-title{font-size:13px;color:var(--t);flex:1;font-weight:500}
+.m-row.boss .m-title{color:var(--r);font-weight:700}
+.m-cash{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--g);min-width:52px;text-align:right}
+.m-grade{font-family:'Bebas Neue',sans-serif;font-size:22px;min-width:28px;text-align:center;line-height:1}
+.m-grade.S{color:var(--a);text-shadow:0 0 14px rgba(255,176,46,.7)}
+.m-grade.A{color:var(--g)}.m-grade.B{color:var(--c)}.m-grade.C{color:var(--dim2)}
+
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ach-card{padding:13px;border-radius:10px;text-align:center;transition:.18s;background:var(--panel);border:1px solid var(--bdr);opacity:.55}
+.ach-card.earned{opacity:1;border-color:rgba(255,176,46,.35);background:linear-gradient(180deg,var(--ad),var(--panel));box-shadow:0 4px 20px rgba(255,176,46,.12)}
+.ach-card .ac-icon{font-size:26px;margin-bottom:5px;filter:grayscale(1)}
+.ach-card.earned .ac-icon{filter:none;animation:pop .4s ease}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+.ach-card .ac-name{font-family:'Chakra Petch',sans-serif;font-size:11px;font-weight:700;color:var(--dim2);letter-spacing:1px}
+.ach-card.earned .ac-name{color:var(--a)}
+.ach-card .ac-desc{font-size:8px;color:var(--dim);margin-top:3px}
+
+.perk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px}
+.perk-card{padding:14px;border-radius:10px;cursor:pointer;transition:.18s;background:var(--panel);border:1px solid var(--bdr);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.perk-card:hover:not(.owned):not(.too-expensive){border-color:var(--g);transform:translateY(-3px);box-shadow:0 8px 26px var(--gg)}
+.perk-card.owned{border-color:rgba(53,224,126,.35);background:linear-gradient(180deg,rgba(53,224,126,.1),var(--panel))}
+.perk-card.too-expensive{opacity:.4;cursor:default}
+.perk-card .pk-icon{font-size:24px;margin-bottom:6px}
+.perk-card .pk-name{font-family:'Chakra Petch',sans-serif;font-size:12px;font-weight:700;color:var(--t)}
+.perk-card.owned .pk-name{color:var(--g)}
+.perk-card .pk-desc{font-size:9px;color:var(--dim);margin:5px 0}
+.perk-card .pk-cost{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--g)}
+.perk-card.owned .pk-cost{color:var(--dim)}
+
+#S-mission{background:linear-gradient(180deg,#0a0d13,#070a0f)}
+.mi-head{padding:11px 16px;background:var(--panel2);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,.4)}
+.mi-left{display:flex;align-items:center;gap:12px}
+.mi-num{font-family:'Chakra Petch',sans-serif;font-size:9px;color:var(--dim);letter-spacing:3px}
+.mi-title{font-family:'Chakra Petch',sans-serif;font-size:15px;font-weight:700;color:var(--w);letter-spacing:1px}
+.mi-right{display:flex;align-items:center;gap:14px}
+.mi-timer{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--a);min-width:46px;text-align:center;text-shadow:0 0 14px rgba(255,176,46,.4)}
+.mi-streak{font-size:12px;color:var(--pk);font-weight:800}
+
+.term{flex:1;overflow-y:auto;padding:18px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;scroll-behavior:smooth}
+.term::-webkit-scrollbar{width:6px}.term::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px}
+
+.story{background:linear-gradient(135deg,rgba(63,185,255,.07),rgba(176,139,255,.05));border:1px solid var(--bdr);border-left:3px solid var(--c);padding:14px 18px;margin-bottom:16px;border-radius:0 10px 10px 0;color:#cfe7ff;font-size:13px;line-height:1.6;font-family:'Inter',sans-serif;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.story .speaker{font-family:'Chakra Petch',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:var(--p);margin-bottom:5px;display:flex;align-items:center;gap:7px}
+.story .speaker::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--p);box-shadow:0 0 8px var(--p)}
+.obj{color:var(--a);font-size:12px;margin-bottom:12px;letter-spacing:1px;font-weight:600;font-family:'Chakra Petch',sans-serif}
+.obj b{color:var(--w)}
+
+.tl{margin-bottom:2px;white-space:pre-wrap;word-break:break-all}
+.tl.cmd{color:var(--w)}.tl.cmd::before{content:'$ ';color:var(--g);font-weight:700}
+.tl.out{color:var(--dim2)}.tl.og{color:var(--g)}.tl.or{color:var(--r)}
+.tl.oa{color:var(--a)}.tl.oc{color:var(--c)}.tl.op{color:var(--p)}
+.tl.hint{color:var(--p);font-style:italic}
+.tl.blank{height:8px}
+.out-block{background:rgba(0,0,0,.35);border:1px solid var(--bdr);border-radius:8px;padding:10px 14px;margin:6px 0 12px;font-size:12px;line-height:1.6}
+
+.mi-done{border-radius:16px;padding:30px 28px;margin:18px 0;text-align:center;position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(255,176,46,.12),rgba(10,12,18,.6));border:1px solid rgba(255,176,46,.3);box-shadow:0 20px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.12)}
+.mi-done::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -20%,rgba(255,176,46,.3),transparent 65%);pointer-events:none}
+.mi-done .done-label{font-family:'Chakra Petch',sans-serif;font-size:11px;letter-spacing:7px;color:var(--a);position:relative}
+.mi-done .done-grade{font-family:'Bebas Neue',sans-serif;font-size:96px;line-height:1;position:relative;animation:gradeIn .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes gradeIn{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.mi-done .done-grade.S{color:var(--a);text-shadow:0 0 50px rgba(255,176,46,.7)}
+.mi-done .done-grade.A{color:var(--g);text-shadow:0 0 40px var(--gg)}
+.mi-done .done-grade.B{color:var(--c)}.mi-done .done-grade.C{color:var(--dim2)}
+.mi-done .done-cash{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--g);margin:6px 0;text-shadow:0 0 24px var(--gg);position:relative}
+.mi-done .done-breakdown{font-size:10px;color:var(--dim);line-height:1.9;position:relative;font-family:'JetBrains Mono',monospace}
+.mi-done .done-breakdown span{color:var(--t)}
+
+.learned{background:var(--ad);border:1px solid rgba(255,176,46,.16);border-radius:10px;padding:14px 18px;margin:14px 0;text-align:left}
+.learned h4{font-family:'Chakra Petch',sans-serif;font-size:10px;letter-spacing:4px;color:var(--a);margin-bottom:8px}
+.learned li{font-size:12px;color:var(--t);line-height:1.6;padding:2px 0;list-style:none;padding-left:18px;position:relative;font-family:'Inter',sans-serif}
+.learned li::before{content:'>';position:absolute;left:0;color:var(--a)}
+
+.in-area{padding:12px 16px;background:var(--panel2);backdrop-filter:blur(14px);border-top:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.in-ps{color:var(--g);font-weight:700;font-size:15px;flex-shrink:0;text-shadow:0 0 10px var(--gg)}
+#ci{flex:1;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--w);caret-color:var(--g)}
+#ci::placeholder{color:var(--dim)}
+.hint-b{font-size:10px;padding:7px 14px;background:var(--pd);border:1px solid rgba(176,139,255,.3);border-radius:7px;color:var(--p);cursor:pointer;flex-shrink:0;font-family:'Chakra Petch',sans-serif;font-weight:600;letter-spacing:1px;transition:.18s}
+.hint-b:hover{border-color:var(--p);background:rgba(176,139,255,.18)}
+.hint-b:disabled{opacity:.25;cursor:default}
+
+@media(max-width:500px){
+  .stats-row{overflow-x:auto}.stat-card{min-width:68px}
+  .ach-grid{grid-template-columns:repeat(2,1fr)}.perk-grid{grid-template-columns:1fr}
+  .term{font-size:12px;padding:13px}
+  .hero{font-size:clamp(54px,16vw,90px)}
+}
+</style>
+</head>
+<body>
+<canvas id="ptc"></canvas>
+<div class="toast-stack" id="toasts"></div>
+
+<!-- TITLE -->
+<div class="S on" id="S-title">
+  <div class="hero-pre">WELCOME TO</div>
+  <div class="hero"><span>OPERATOR</span></div>
+  <div class="hero-tag">C L A U D E &nbsp; C O D E &nbsp; O P S</div>
+  <input class="name-in" id="ni" placeholder="CODENAME" maxlength="10">
+  <div class="name-hint">ENTER YOUR HANDLE, OPERATIVE</div>
+  <button class="B g" id="go-btn" disabled onclick="enterHQ()">DEPLOY</button>
+  <button class="title-reset" onclick="localStorage.removeItem('op_save');location.reload()">RESET PROGRESS</button>
+</div>
+
+<!-- HQ -->
+<div class="S" id="S-hq">
+  <div class="hq-top">
+    <div class="hq-rank-badge">
+      <div class="rank-icon" id="r-icon">🔰</div>
+      <div><div class="rank-title" id="r-title">RECRUIT</div><div class="rank-sub" id="r-sub">RANK 1</div></div>
+    </div>
+    <div class="hq-cash"><span class="dollar">$</span><span id="hq-cash">0</span></div>
+  </div>
+  <div class="xp-wrap">
+    <div class="xp-meta"><span id="xp-rank">RANK 1 → 2</span><span id="xp-nums">0 / 200 XP</span></div>
+    <div class="xp-track"><div class="xp-fill" id="xp-fill"></div></div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="sv" id="st-m">0</div><div class="sl">MISSIONS</div></div>
+    <div class="stat-card"><div class="sv" id="st-s">0</div><div class="sl">S-RANKS</div></div>
+    <div class="stat-card"><div class="sv" id="st-st">0</div><div class="sl">STREAK</div></div>
+    <div class="stat-card"><div class="sv" id="st-ach">0</div><div class="sl">BADGES</div></div>
+  </div>
+  <div class="hq-tabs">
+    <div class="hq-tab on" data-tab="missions" onclick="switchTab(this)">MISSIONS</div>
+    <div class="hq-tab" data-tab="perks" onclick="switchTab(this)">PERKS</div>
+    <div class="hq-tab" data-tab="badges" onclick="switchTab(this)">BADGES</div>
+  </div>
+  <div class="hq-panel on" id="pan-missions"></div>
+  <div class="hq-panel" id="pan-perks"></div>
+  <div class="hq-panel" id="pan-badges"></div>
+</div>
+
+<!-- MISSION -->
+<div class="S" id="S-mission">
+  <div class="mi-head">
+    <div class="mi-left">
+      <div class="mi-num" id="mi-num"></div>
+      <div class="mi-title" id="mi-title"></div>
+    </div>
+    <div class="mi-right">
+      <div class="mi-streak" id="mi-streak"></div>
+      <div class="mi-timer" id="mi-timer">0:00</div>
+      <button class="B dim sm" onclick="exitMission()">ABORT</button>
+    </div>
+  </div>
+  <div class="term" id="term"></div>
+  <div class="in-area">
+    <span class="in-ps">$</span>
+    <input type="text" id="ci" placeholder="type command..." autocomplete="off" autocapitalize="off" spellcheck="false">
+    <button class="hint-b" id="hb" onclick="useHint()">HINT <span id="hc"></span></button>
+  </div>
+</div>
+
+<script>
+// ========== AUDIO ==========
+const AC=window.AudioContext||window.webkitAudioContext;let ac;
+function ia(){if(!ac)ac=new AC()}
+function t(f,d,tp='sine',v=.1){if(!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.type=tp;o.frequency.setValueAtTime(f,ac.currentTime);g.gain.setValueAtTime(v,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}
+function sfxType(){t(600+Math.random()*200,.03,'sine',.04)}
+function sfxOk(){t(523,.08);setTimeout(()=>t(659,.08),60);setTimeout(()=>t(784,.1),120)}
+function sfxWrong(){t(200,.12,'sawtooth',.06);setTimeout(()=>t(150,.15,'sawtooth',.04),80)}
+function sfxCash(){t(880,.05,'triangle',.06);setTimeout(()=>t(1100,.08,'triangle',.05),60)}
+function sfxRank(){[523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>t(f,.1,'triangle',.08),i*70))}
+function sfxAch(){t(784,.08,'sine',.07);setTimeout(()=>t(1047,.12,'sine',.06),80);setTimeout(()=>t(1319,.15,'sine',.05),160)}
+function sfxS(){[1047,1319,1568,2093].forEach((f,i)=>setTimeout(()=>t(f,.08,'sine',.07),i*50))}
+
+// ========== PARTICLES ==========
+const pc=document.getElementById('ptc'),px=pc.getContext('2d');let pts=[];
+function rpc(){pc.width=innerWidth;pc.height=innerHeight}addEventListener('resize',rpc);rpc();
+function emit(x,y,col,n=20){for(let i=0;i<n;i++)pts.push({x,y,vx:(Math.random()-.5)*400,vy:Math.random()*-350-80,s:Math.random()*5+2,c:col,l:Math.random()*.8+.4,r:Math.random()*6,rv:(Math.random()-.5)*10})}
+function uPts(dt){for(let i=pts.length-1;i>=0;i--){const p=pts[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=400*dt;p.r+=p.rv*dt;p.l-=dt;if(p.l<=0)pts.splice(i,1)}}
+function dPts(){px.clearRect(0,0,pc.width,pc.height);pts.forEach(p=>{px.save();px.translate(p.x,p.y);px.rotate(p.r);px.globalAlpha=Math.min(1,p.l*2.5);px.fillStyle=p.c;px.fillRect(-p.s/2,-p.s/3,p.s,p.s*.6);px.restore()})}
+
+// ========== TOASTS ==========
+function toast(type,icon,title,sub){
+  const d=document.createElement('div');
+  d.className='toast '+type;
+  d.innerHTML=`<span class="t-icon">${icon}</span><div class="t-body"><div class="t-title">${title}</div><div class="t-sub">${sub}</div></div>`;
+  document.getElementById('toasts').appendChild(d);
+  setTimeout(()=>d.remove(),3000);
+}
+
+// ========== RANKS ==========
+const RANKS=[
+  {t:'RECRUIT',icon:'🔰',xp:0},
+  {t:'JUNIOR OPS',icon:'⚡',xp:200},
+  {t:'OPERATOR',icon:'🎯',xp:500},
+  {t:'SPECIALIST',icon:'🔥',xp:1000},
+  {t:'ELITE',icon:'💎',xp:1800},
+  {t:'COMMANDER',icon:'🌟',xp:3000},
+  {t:'LEGEND',icon:'👑',xp:5000},
+];
+
+// ========== ACHIEVEMENTS ==========
+const ACHS=[
+  {id:'first_blood',n:'First Blood',d:'Complete your first mission',icon:'🎯',check:s=>s.done>=1},
+  {id:'speed_demon',n:'Speed Demon',d:'S-Rank a mission in under 15 seconds',icon:'⚡',check:s=>s.fastS},
+  {id:'no_hints',n:'Lone Wolf',d:'Complete 5 missions without hints',icon:'🐺',check:s=>s.noHints>=5},
+  {id:'streak3',n:'Hot Streak',d:'Get a 3-mission streak',icon:'🔥',check:s=>s.streak>=3},
+  {id:'streak5',n:'Unstoppable',d:'Get a 5-mission streak',icon:'💥',check:s=>s.streak>=5},
+  {id:'rich',n:'Loaded',d:'Earn $5,000 total',icon:'💰',check:s=>s.totalCash>=5000},
+  {id:'srank3',n:'Perfectionist',d:'Get 3 S-Ranks',icon:'⭐',check:s=>s.sRanks>=3},
+  {id:'all_ch1',n:'Day One',d:'Complete Chapter 1',icon:'📅',check:s=>s.ch1},
+  {id:'all_ch2',n:'Configured',d:'Complete Chapter 2',icon:'⚙️',check:s=>s.ch2},
+  {id:'all_ch3',n:'Workflow King',d:'Complete Chapter 3',icon:'🔗',check:s=>s.ch3},
+  {id:'boss1',n:'Boss Slayer',d:'Beat a Boss mission',icon:'🗡️',check:s=>s.boss>=1},
+  {id:'all_done',n:'Operator',d:'Complete all missions',icon:'👑',check:s=>s.done>=MISSIONS.length},
+];
+
+// ========== PERKS ==========
+const PERKS=[
+  {id:'extra_hint',n:'Intel Boost',d:'+1 hint per mission',icon:'💡',cost:300},
+  {id:'time_freeze',n:'Time Freeze',d:'+10 seconds per mission',icon:'⏱️',cost:500},
+  {id:'double_streak',n:'Double Streak',d:'Streak bonus ×2',icon:'🔥',cost:800},
+  {id:'cash_magnet',n:'Cash Magnet',d:'+25% cash from all missions',icon:'💰',cost:1200},
+  {id:'second_chance',n:'Second Chance',d:'1 free retry on wrong answer (per mission)',icon:'🛡️',cost:1500},
+  {id:'srank_bonus',n:'S-Rank Bonus',d:'+$200 extra for every S-Rank',icon:'⭐',cost:2000},
+];
+
+// ========== MISSIONS ==========
+const MISSIONS=[
+  // CH1: DAY ONE
+  {ch:"DAY 1 — GETTING ONLINE",num:1,title:"Install Claude Code",boss:false,baseCash:100,baseXP:50,
+   story:{speaker:"CTO",text:"Welcome aboard. First thing — get Claude Code on your machine. It's how we ship fast around here. It's an npm package."},
+   objective:"Install Claude Code globally",
+   steps:[{
+     accept:["npm install -g @anthropic-ai/claude-code","npm i -g @anthropic-ai/claude-code"],
+     hints:["npm package — you install it globally","The package is @anthropic-ai/claude-code","npm install -g @anthropic-ai/claude-code"],
+     out:[{c:"out",s:"added 1 package in 3.2s"},{c:"og",s:"✓ Claude Code v1.0.20 installed"}],
+     ok:"Installed. You're in."
+   }],
+   learned:["Claude Code is an npm package: @anthropic-ai/claude-code","Installed globally with -g — runs from anywhere","Requires Node.js 18+"]},
+
+  {ch:"DAY 1 — GETTING ONLINE",num:2,title:"Set Your API Key",boss:false,baseCash:100,baseXP:50,
+   story:{speaker:"CTO",text:"You need an API key before Claude Code will talk to anyone. Set it as an environment variable — we never hardcode keys."},
+   objective:"Export your ANTHROPIC_API_KEY",
+   steps:[{
+     accept:["export ANTHROPIC_API_KEY=*"],
+     hints:["It's an environment variable you export","The variable name is ANTHROPIC_API_KEY","export ANTHROPIC_API_KEY=sk-ant-your-key"],
+     out:[{c:"og",s:"✓ API key configured"}],
+     ok:"Key set. Never commit this to git."
+   }],
+   learned:["API key goes in ANTHROPIC_API_KEY environment variable","Add to .bashrc/.zshrc to persist across sessions","Never hardcode or commit API keys"]},
+
+  {ch:"DAY 1 — GETTING ONLINE",num:3,title:"Boot Up",boss:false,baseCash:120,baseXP:60,
+   story:{speaker:"CTO",text:"Fire it up. Just type the command and you're in the REPL. That's where the real work happens."},
+   objective:"Launch Claude Code",
+   steps:[{
+     accept:["claude"],
+     hints:["One word. The name of the tool.","Just type: claude","claude"],
+     out:[{c:"oc",s:"╭───────────────────────────────────╮"},{c:"oc",s:"│  Claude Code v1.0.20              │"},{c:"oc",s:"│  /help for commands               │"},{c:"oc",s:"╰───────────────────────────────────╯"},{c:"og",s:"✓ Connected to Claude Sonnet"},{c:"out",s:"What would you like to work on?"}],
+     ok:"You're live. This is your new home."
+   }],
+   learned:["'claude' launches the interactive REPL","Claude Sonnet is the default model","Type /help to see all commands"]},
+
+  {ch:"DAY 1 — GETTING ONLINE",num:4,title:"Quick Hit",boss:false,baseCash:150,baseXP:70,
+   story:{speaker:"GM",text:"I need you to check something real quick — don't open a full session, just fire a one-shot command and get out."},
+   objective:"Run a one-shot prompt with the -p flag",
+   steps:[{
+     accept:["claude -p *"],
+     hints:["There's a flag for passing a prompt directly","-p lets you run without entering interactive mode","claude -p \"your prompt here\""],
+     out:[{c:"out",s:"src/"},{c:"out",s:"├── index.ts"},{c:"out",s:"├── auth.ts"},{c:"out",s:"└── utils.ts"}],
+     ok:"One-shot mode. In, out, done. Perfect for scripts and quick checks."
+   }],
+   learned:["claude -p \"prompt\" runs non-interactively","Output goes to stdout — pipeable","Essential for scripts and automation"]},
+
+  {ch:"DAY 1 — GETTING ONLINE",num:5,title:"BOSS: Full Stack Boot",boss:true,baseCash:400,baseXP:200,
+   story:{speaker:"CTO",text:"Alright rookie — prove you've got the basics. Install, configure, launch, and run a one-shot. All four. Go."},
+   objective:"Step 1/4: Install Claude Code",
+   steps:[
+     {accept:["npm install -g @anthropic-ai/claude-code","npm i -g @anthropic-ai/claude-code"],hints:["npm global install","@anthropic-ai/claude-code","npm install -g @anthropic-ai/claude-code"],out:[{c:"og",s:"✓ Installed"}],ok:"1/4. Set your key."},
+     {accept:["export ANTHROPIC_API_KEY=*"],hints:["Export the env variable","ANTHROPIC_API_KEY","export ANTHROPIC_API_KEY=sk-ant-xxx"],out:[{c:"og",s:"✓ Key set"}],ok:"2/4. Launch it."},
+     {accept:["claude"],hints:["One word","claude","claude"],out:[{c:"og",s:"✓ REPL active"}],ok:"3/4. Now run a one-shot — exit and use -p."},
+     {accept:["claude -p *"],hints:["One-shot flag","-p with a prompt","claude -p \"check status\""],out:[{c:"og",s:"✓ One-shot executed"}],ok:"4/4. Boss cleared."}
+   ],
+   learned:["Full workflow: install → configure key → launch → one-shot","These 4 commands are the foundation of everything","You'll use them every single day"]},
+
+  // CH2
+  {ch:"DAY 2 — YOUR WORKSPACE",num:6,title:"Project Memory",boss:false,baseCash:150,baseXP:80,
+   story:{speaker:"GM",text:"Create a CLAUDE.md in our project root. It's how Claude remembers our conventions, stack, and rules between sessions."},
+   objective:"Create a CLAUDE.md file",
+   steps:[{
+     accept:["touch CLAUDE.md","echo *>CLAUDE.md","echo *> CLAUDE.md","nano CLAUDE.md","vim CLAUDE.md","cat > CLAUDE.md","code CLAUDE.md"],
+     hints:["Create a file called CLAUDE.md","Any file creation command works","touch CLAUDE.md"],
+     out:[{c:"og",s:"✓ CLAUDE.md created"},{c:"out",s:""},{c:"oc",s:"Add: tech stack, conventions, architecture, common commands"}],
+     ok:"Claude reads this automatically. Your whole team benefits."
+   }],
+   learned:["CLAUDE.md = persistent project context for Claude","Put it in project root — checked into git","Include: stack, conventions, commands, architecture"]},
+
+  {ch:"DAY 2 — YOUR WORKSPACE",num:7,title:"Know Your Tools",boss:false,baseCash:100,baseXP:50,
+   story:{speaker:"SYSTEM",text:"Before you go further, know what slash commands are available. Pull up the reference."},
+   objective:"Show the help menu",
+   steps:[{
+     accept:["/help"],
+     hints:["Slash command for available commands","/help","/help"],
+     out:[{c:"oc",s:"Commands:"},{c:"out",s:"  /help    /clear    /compact"},{c:"out",s:"  /cost    /mcp      /quit"}],
+     ok:"Memorize these. They're your control panel."
+   }],
+   learned:["/help lists all slash commands","/clear, /compact, /cost, /mcp, /quit","These control Claude Code itself, not your project"]},
+
+  {ch:"DAY 2 — YOUR WORKSPACE",num:8,title:"Running Hot",boss:false,baseCash:150,baseXP:70,
+   story:{speaker:"GM",text:"You've been going for an hour. Claude's slowing down — context window is full. Compress it without losing your progress."},
+   objective:"Compact the conversation",
+   steps:[{
+     accept:["/compact"],
+     hints:["Slash command that compresses history","Makes context smaller","/ compact"],
+     out:[{c:"oa",s:"Compacting..."},{c:"og",s:"✓ 47 messages → summary (saved ~18K tokens)"},{c:"out",s:"Context: ████░░░░░░ 38%"}],
+     ok:"/compact > /clear. You keep context without the bloat."
+   }],
+   learned:["/compact summarizes to free context window","Better than /clear — preserves key context","Use when Claude slows down or starts forgetting"]},
+
+  {ch:"DAY 2 — YOUR WORKSPACE",num:9,title:"Pre-Approve Tools",boss:false,baseCash:180,baseXP:90,
+   story:{speaker:"CTO",text:"Stop babysitting Claude's permission requests. Pre-approve bash and edit for this project so it can just work."},
+   objective:"Edit .claude/settings.json to add allowedTools",
+   steps:[{
+     accept:["*settings.json*","*allowedTools*","echo*allowed*","nano .claude/*","vim .claude/*","code .claude/*"],
+     hints:["Settings file is at .claude/settings.json","You need to add tools to allowedTools",".claude/settings.json → allowedTools: [\"bash\", \"edit\"]"],
+     out:[{c:"oc",s:'.claude/settings.json:'},{c:"oc",s:'{ "allowedTools": ["bash", "edit"] }'},{c:"og",s:"✓ bash and edit pre-approved"}],
+     ok:"No more permission pop-ups. Claude just executes."
+   }],
+   learned:["allowedTools in .claude/settings.json skips permission prompts","Common: bash, edit, grep, rg","Project-level: .claude/settings.json — Global: ~/.claude/settings.json"]},
+
+  {ch:"DAY 2 — YOUR WORKSPACE",num:10,title:"BOSS: Config Sprint",boss:true,baseCash:450,baseXP:250,
+   story:{speaker:"CTO",text:"Set up a project from scratch: CLAUDE.md, check commands, manage context, pre-approve tools. Full config. Timer's running."},
+   objective:"Step 1/4: Create CLAUDE.md",
+   steps:[
+     {accept:["touch CLAUDE.md","echo *>CLAUDE.md","echo *> CLAUDE.md","nano CLAUDE.md","vim CLAUDE.md"],hints:["Create the file","touch CLAUDE.md","touch CLAUDE.md"],out:[{c:"og",s:"✓ Created"}],ok:"1/4. Check available commands."},
+     {accept:["/help"],hints:["/help","/help","/help"],out:[{c:"og",s:"✓ Commands listed"}],ok:"2/4. Compact your context."},
+     {accept:["/compact"],hints:["/compact","/compact","/compact"],out:[{c:"og",s:"✓ Compacted"}],ok:"3/4. Pre-approve tools."},
+     {accept:["*settings*","*allowedTools*"],hints:["Edit .claude/settings.json",".claude/settings.json","Edit .claude/settings.json with allowedTools"],out:[{c:"og",s:"✓ Tools configured"}],ok:"Boss cleared. Workspace is locked and loaded."}
+   ],
+   learned:["Full workspace config: CLAUDE.md → /help → /compact → allowedTools","This is what you do on Day 1 of any new project","Invest 5 minutes in config, save hours later"]},
+
+  // CH3
+  {ch:"DAY 3 — REAL OPS",num:11,title:"Resume Mission",boss:false,baseCash:150,baseXP:80,
+   story:{speaker:"SYSTEM",text:"You closed your laptop last night mid-refactor. Pick up exactly where you left off."},
+   objective:"Continue your last session",
+   steps:[{
+     accept:["claude --continue","claude -c"],
+     hints:["There's a flag to resume the last session","--continue or its shorthand","claude --continue or claude -c"],
+     out:[{c:"oc",s:"Resuming session from 14 hours ago..."},{c:"og",s:"✓ 23 messages restored"},{c:"out",s:"Ready to continue with the auth refactor."}],
+     ok:"Zero context lost. --continue is your best friend."
+   }],
+   learned:["claude --continue (or -c) resumes last conversation","claude --resume lets you pick from recent sessions","All context and progress is restored"]},
+
+  {ch:"DAY 3 — REAL OPS",num:12,title:"Feed the Logs",boss:false,baseCash:200,baseXP:100,
+   story:{speaker:"GM",text:"Production is down. Error logs are flying. Pipe them directly into Claude and get a diagnosis NOW."},
+   objective:"Pipe a file into Claude Code for analysis",
+   steps:[{
+     accept:["cat *| claude -p *","cat *|claude -p *"],
+     hints:["cat reads the file, | pipes it, claude -p analyzes it","Combine: cat file | claude -p \"prompt\"","cat error.log | claude -p \"diagnose these errors\""],
+     out:[{c:"or",s:"Found 3 critical errors:"},{c:"out",s:"1. TypeError in auth.ts:47 — null user on session expiry"},{c:"out",s:"2. ECONNREFUSED:5432 — DB pool exhausted"},{c:"og",s:"Fix: null check + increase pool size."}],
+     ok:"Piping is the killer pattern. Any command → Claude."
+   }],
+   learned:["cat file | claude -p \"prompt\" pipes content to Claude","Works with ANY command: grep, curl, docker logs","This integrates Claude into your existing terminal workflow"]},
+
+  {ch:"DAY 3 — REAL OPS",num:13,title:"PR Review",boss:false,baseCash:250,baseXP:120,
+   story:{speaker:"GM",text:"A teammate opened a PR. Before you approve — pipe the diff through Claude. Trust but verify."},
+   objective:"Review a git diff with Claude Code",
+   steps:[{
+     accept:["git diff *| claude -p *"],
+     hints:["git diff gets changes, then pipe to Claude","git diff main | claude -p \"review\"","git diff main | claude -p \"review this for bugs\""],
+     out:[{c:"oa",s:"⚠ SQL injection in user_search() — string concatenation"},{c:"or",s:"  Line 34: query = f\"SELECT * WHERE name = '{name}'\""},{c:"og",s:"✓ Auth middleware changes correct"},{c:"out",s:"1 critical, 0 warnings."}],
+     ok:"Claude caught a SQL injection. This is a real workflow. Use it."
+   }],
+   learned:["git diff main | claude -p \"review\" is a production code review pattern","Catches security issues, logic errors, style problems","Add to your team's PR checklist"]},
+
+  {ch:"DAY 3 — REAL OPS",num:14,title:"Pipeline Mode",boss:false,baseCash:250,baseXP:120,
+   story:{speaker:"CTO",text:"I want Claude Code in our CI pipeline — fixing lint errors automatically. No human in the loop. Make it headless."},
+   objective:"Run Claude Code non-interactively with pre-approved tools and a turn limit",
+   steps:[{
+     accept:["claude -p *--allowedTools *--max-turns *"],
+     hints:["Three flags: -p (prompt), --allowedTools (permissions), --max-turns (safety)","Combine all three for headless CI execution","claude -p \"fix lint\" --allowedTools bash,edit --max-turns 10"],
+     out:[{c:"oa",s:"[CI] Headless mode..."},{c:"out",s:"Turn 1: Reading ESLint output..."},{c:"out",s:"Turn 2: Fixing auth.ts"},{c:"out",s:"Turn 3: Fixing utils.ts"},{c:"out",s:"Turn 4: Verifying..."},{c:"og",s:"✓ All fixed. Exit code: 0"}],
+     ok:"Self-healing CI. This is how you automate Claude Code."
+   }],
+   learned:["-p + --allowedTools + --max-turns = headless CI mode","--max-turns prevents runaway loops","Use in GitHub Actions, Jenkins, or any pipeline"]},
+
+  {ch:"DAY 3 — REAL OPS",num:15,title:"BOSS: Incident Response",boss:true,baseCash:600,baseXP:300,
+   story:{speaker:"CTO",text:"Production incident. Resume your session, pipe the logs, review the fix diff, then set up CI to prevent it next time. Clock's ticking."},
+   objective:"Step 1/4: Resume your last session",
+   steps:[
+     {accept:["claude --continue","claude -c"],hints:["--continue","-c","claude -c"],out:[{c:"og",s:"✓ Session restored"}],ok:"1/4. Pipe the error logs."},
+     {accept:["cat *| claude -p *"],hints:["cat + pipe + claude -p","cat errors.log | claude -p","cat error.log | claude -p \"diagnose\""],out:[{c:"og",s:"✓ Root cause identified"}],ok:"2/4. Review the fix."},
+     {accept:["git diff *| claude -p *"],hints:["git diff | claude -p","Pipe the diff","git diff main | claude -p \"review\""],out:[{c:"og",s:"✓ Fix verified"}],ok:"3/4. Set up CI prevention."},
+     {accept:["claude -p *--allowedTools *--max-turns *"],hints:["Headless CI command","Three flags: -p, --allowedTools, --max-turns","claude -p \"lint\" --allowedTools bash,edit --max-turns 10"],out:[{c:"og",s:"✓ CI pipeline configured"}],ok:"Incident resolved. Boss cleared."}
+   ],
+   learned:["Full incident workflow: resume → diagnose → review → prevent","Each skill compounds — piping, diffing, CI automation","This is how senior engineers operate with Claude Code"]},
+
+  // CH4: POWER USER
+  {ch:"DAY 4 — POWER OPS",num:16,title:"MCP Connect",boss:false,baseCash:200,baseXP:100,
+   story:{speaker:"CTO",text:"We need Claude talking directly to our Postgres database. Set up an MCP server connection."},
+   objective:"Open MCP server management",
+   steps:[{
+     accept:["/mcp"],
+     hints:["Slash command for Model Context Protocol","/mcp","/mcp"],
+     out:[{c:"oc",s:"MCP Server Management"},{c:"out",s:"Connected: (none)"},{c:"out",s:"/mcp add — Add server"},{c:"out",s:"Transports: stdio (local), SSE (remote)"}],
+     ok:"MCP is how Claude reaches external tools. Databases, APIs, anything."
+   }],
+   learned:["MCP = Model Context Protocol","Use /mcp to manage connections","Supports stdio (local) and SSE (remote) transports","Connects Claude to databases, APIs, and custom tools"]},
+
+  {ch:"DAY 4 — POWER OPS",num:17,title:"Cost Check",boss:false,baseCash:150,baseXP:80,
+   story:{speaker:"GM",text:"Finance is asking about our AI spend. Check what this session has cost before I report the numbers."},
+   objective:"Check token usage and cost",
+   steps:[{
+     accept:["/cost"],
+     hints:["Slash command for costs","/cost","/cost"],
+     out:[{c:"oa",s:"  Input:  12,847 tokens"},{c:"oa",s:"  Output:  3,291 tokens"},{c:"oa",s:"  Cost:   $0.04"}],
+     ok:"Always know your burn rate. /cost before you close a session."
+   }],
+   learned:["/cost shows tokens used and cost","Input tokens < output tokens in cost","Track per-session to manage API budget"]},
+
+  {ch:"DAY 4 — POWER OPS",num:18,title:"Monorepo Layout",boss:false,baseCash:250,baseXP:120,
+   story:{speaker:"CTO",text:"We're going monorepo. Set up layered CLAUDE.md files — root for shared context, package-level for specifics."},
+   objective:"Create layered CLAUDE.md files for a monorepo",
+   steps:[{
+     accept:["*CLAUDE.md*"],
+     hints:["Create CLAUDE.md at multiple levels","Root CLAUDE.md + package CLAUDE.md files","touch CLAUDE.md packages/api/CLAUDE.md packages/web/CLAUDE.md"],
+     out:[{c:"oc",s:"CLAUDE.md                  ← monorepo overview"},{c:"oc",s:"packages/api/CLAUDE.md     ← API specifics"},{c:"oc",s:"packages/web/CLAUDE.md     ← Web specifics"},{c:"og",s:"✓ Claude reads ALL from cwd up to root"}],
+     ok:"Layered context. Each package gets its own brain."
+   }],
+   learned:["CLAUDE.md discovered from cwd up to project root","Root: shared conventions. Package: specific context.","Commit to git — shared team knowledge","Scales to any monorepo size"]},
+
+  {ch:"DAY 4 — POWER OPS",num:19,title:"JSON Output",boss:false,baseCash:200,baseXP:100,
+   story:{speaker:"GM",text:"We need Claude Code's output in our build script. Get it as JSON so we can parse it."},
+   objective:"Get structured JSON output from Claude Code",
+   steps:[{
+     accept:["claude -p *--output-format json*","claude -p *--output-format=json*"],
+     hints:["There's a flag for output format","--output-format json","claude -p \"list deps\" --output-format json"],
+     out:[{c:"oc",s:'{ "result": "...", "model": "claude-sonnet-4-20250514",'},{c:"oc",s:'  "tokens": { "input": 1204, "output": 387 },'},{c:"oc",s:'  "cost": "$0.006" }'}],
+     ok:"JSON output makes Claude scriptable. Parse with jq or any language."
+   }],
+   learned:["--output-format json returns structured JSON","Includes: result, model, tokens, cost, duration","Pipe to jq: claude -p '...' --output-format json | jq '.result'"]},
+
+  {ch:"DAY 4 — POWER OPS",num:20,title:"BOSS: Full Operator",boss:true,baseCash:800,baseXP:500,
+   story:{speaker:"CTO",text:"Final test. You've learned everything. Now prove it — MCP, cost tracking, monorepo setup, and JSON pipeline. All of it."},
+   objective:"Step 1/4: Connect an MCP server",
+   steps:[
+     {accept:["/mcp"],hints:["/mcp","/mcp","/mcp"],out:[{c:"og",s:"✓ MCP ready"}],ok:"1/4. Check your costs."},
+     {accept:["/cost"],hints:["/cost","/cost","/cost"],out:[{c:"og",s:"✓ $0.12 this session"}],ok:"2/4. Set up monorepo CLAUDE.md."},
+     {accept:["*CLAUDE.md*"],hints:["Layered CLAUDE.md","Multiple CLAUDE.md files","touch CLAUDE.md packages/api/CLAUDE.md"],out:[{c:"og",s:"✓ Monorepo configured"}],ok:"3/4. Get JSON output for the pipeline."},
+     {accept:["claude -p *--output-format json*","claude -p *--output-format=json*"],hints:["--output-format json","JSON flag","claude -p \"check\" --output-format json"],out:[{c:"og",s:"✓ Pipeline output configured"}],ok:"All 20 missions complete. You are an Operator."}
+   ],
+   learned:["You now command the full Claude Code toolkit","Install → Configure → Operate → Automate → Scale","Go apply this. Open your terminal. Type 'claude'. Build something.","You're not the same person who started this training."]}
+];
+
+// ========== STATE ==========
+let S={name:'',cash:0,totalCash:0,xp:0,rank:0,done:0,streak:0,bestStreak:0,sRanks:0,noHints:0,fastS:false,boss:0,ch1:false,ch2:false,ch3:false,grades:{},achs:[],perks:[],retryUsed:false};
+if(location.search.indexOf('fresh')>-1){try{localStorage.removeItem('op_save')}catch(e){}}
+try{const saved=JSON.parse(localStorage.getItem('op_save'));if(saved)S={...S,...saved}}catch(e){}
+function save(){localStorage.setItem('op_save',JSON.stringify(S))}
+function resetAll(){S={name:S.name,cash:0,totalCash:0,xp:0,rank:0,done:0,streak:0,bestStreak:0,sRanks:0,noHints:0,fastS:false,boss:0,ch1:false,ch2:false,ch3:false,grades:{},achs:[],perks:[],retryUsed:false};save();buildHQ()}
+
+let curM=null,curStep=0,hints=0,maxH=3,mTime=0,mInt=null,stepComplete=false;
+
+// ========== SCREENS ==========
+function show(id){document.querySelectorAll('.S').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on')}
+const ni=document.getElementById('ni');
+ni.addEventListener('input',()=>{document.getElementById('go-btn').disabled=!ni.value.trim()});
+ni.addEventListener('keydown',e=>{if(e.key==='Enter'&&ni.value.trim())enterHQ()});
+function enterHQ(){ia();S.name=ni.value.trim().toUpperCase();save();show('S-hq');buildHQ()}
+
+// ========== HQ ==========
+function buildHQ(){
+  updateRankDisplay();
+  document.getElementById('hq-cash').textContent=S.cash.toLocaleString();
+  document.getElementById('st-m').textContent=S.done;
+  document.getElementById('st-s').textContent=S.sRanks;
+  document.getElementById('st-st').textContent=S.bestStreak;
+  document.getElementById('st-ach').textContent=S.achs.length;
+  buildMissions();buildPerks();buildBadges();
+}
+function updateRankDisplay(){
+  const r=RANKS[S.rank]||RANKS[0];
+  const nr=RANKS[S.rank+1];
+  document.getElementById('r-icon').textContent=r.icon;
+  document.getElementById('r-title').textContent=r.t;
+  document.getElementById('r-sub').textContent='RANK '+(S.rank+1);
+  if(nr){
+    document.getElementById('xp-rank').textContent=`RANK ${S.rank+1} → ${S.rank+2}`;
+    document.getElementById('xp-nums').textContent=`${S.xp} / ${nr.xp} XP`;
+    document.getElementById('xp-fill').style.width=((S.xp-r.xp)/(nr.xp-r.xp)*100)+'%';
+  } else {
+    document.getElementById('xp-rank').textContent='MAX RANK';
+    document.getElementById('xp-nums').textContent=S.xp+' XP';
+    document.getElementById('xp-fill').style.width='100%';
+  }
+}
+function switchTab(el){
+  document.querySelectorAll('.hq-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('.hq-panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pan-'+el.dataset.tab).classList.add('on');
+}
+
+function buildMissions(){
+  const pan=document.getElementById('pan-missions');pan.innerHTML='';
+  let lastCh='';
+  MISSIONS.forEach((m,i)=>{
+    if(m.ch!==lastCh){lastCh=m.ch;const l=document.createElement('div');l.className='ch-label';l.textContent=m.ch;pan.appendChild(l)}
+    const unlocked=i===0||S.grades[MISSIONS[i-1].num];
+    const grade=S.grades[m.num]||'';
+    const row=document.createElement('div');
+    row.className='m-row'+(unlocked?'':' locked')+(m.boss?' boss':'');
+    row.onclick=()=>{if(unlocked)startMission(i)};
+    row.innerHTML=`<span class="m-num">${String(m.num).padStart(2,'0')}</span><span class="m-title">${m.boss?'⚔ ':''}${m.title}</span><span class="m-cash">$${m.baseCash}</span><span class="m-grade ${grade}">${grade||'—'}</span>`;
+    pan.appendChild(row);
+  });
+}
+
+function buildPerks(){
+  const pan=document.getElementById('pan-perks');pan.innerHTML='';
+  const g=document.createElement('div');g.className='perk-grid';
+  PERKS.forEach(p=>{
+    const owned=S.perks.includes(p.id);
+    const tooExp=!owned&&S.cash<p.cost;
+    const d=document.createElement('div');
+    d.className='perk-card'+(owned?' owned':'')+(tooExp?' too-expensive':'');
+    d.innerHTML=`<div class="pk-icon">${p.icon}</div><div class="pk-name">${p.n}</div><div class="pk-desc">${p.d}</div><div class="pk-cost">${owned?'OWNED':'$'+p.cost}</div>`;
+    if(!owned&&!tooExp) d.onclick=()=>buyPerk(p);
+    g.appendChild(d);
+  });
+  pan.appendChild(g);
+}
+function buyPerk(p){
+  if(S.cash<p.cost||S.perks.includes(p.id))return;
+  S.cash-=p.cost;S.perks.push(p.id);save();
+  sfxCash();toast('cash',p.icon,p.n+' UNLOCKED',p.d);
+  buildHQ();
+}
+function hasPerk(id){return S.perks.includes(id)}
+
+function buildBadges(){
+  const pan=document.getElementById('pan-badges');pan.innerHTML='';
+  const g=document.createElement('div');g.className='ach-grid';
+  ACHS.forEach(a=>{
+    const d=document.createElement('div');
+    d.className='ach-card'+(S.achs.includes(a.id)?' earned':'');
+    d.innerHTML=`<div class="ac-icon">${a.icon}</div><div class="ac-name">${a.n}</div><div class="ac-desc">${a.d}</div>`;
+    g.appendChild(d);
+  });
+  pan.appendChild(g);
+}
+
+// ========== ACHIEVEMENTS CHECK ==========
+function checkAchs(){
+  const state={done:S.done,streak:S.bestStreak,totalCash:S.totalCash,sRanks:S.sRanks,noHints:S.noHints,fastS:S.fastS,boss:S.boss,
+    ch1:[1,2,3,4,5].every(n=>S.grades[n]),ch2:[6,7,8,9,10].every(n=>S.grades[n]),ch3:[11,12,13,14,15].every(n=>S.grades[n])};
+  ACHS.forEach(a=>{
+    if(!S.achs.includes(a.id)&&a.check(state)){
+      S.achs.push(a.id);sfxAch();toast('ach',a.icon,a.n,a.d);
+      emit(innerWidth/2,innerHeight/2,['#f59e0b','#fbbf24','#fde68a'][Math.floor(Math.random()*3)],30);
+    }
+  });
+}
+
+// ========== RANK CHECK ==========
+function checkRank(){
+  while(S.rank<RANKS.length-1&&S.xp>=RANKS[S.rank+1].xp){
+    S.rank++;
+    sfxRank();
+    const r=RANKS[S.rank];
+    toast('rank',r.icon,'RANK UP: '+r.t,'Rank '+(S.rank+1));
+    emit(innerWidth/2,innerHeight*.3,['#22c55e','#4ade80','#86efac'][Math.floor(Math.random()*3)],40);
+  }
+}
+
+// ========== MISSION ==========
+function startMission(idx){
+  curM=MISSIONS[idx];curStep=0;hints=0;mTime=0;stepComplete=false;
+  S.retryUsed=false;
+  maxH=hasPerk('extra_hint')?4:3;
+  show('S-mission');
+  document.getElementById('mi-num').textContent='MISSION '+String(curM.num).padStart(2,'0');
+  document.getElementById('mi-title').textContent=curM.title;
+  document.getElementById('mi-streak').textContent=S.streak>0?'🔥'+S.streak:'';
+  updateHintBtn();
+
+  const term=document.getElementById('term');term.innerHTML='';
+  addStory(curM.story.speaker,curM.story.text);
+  addObj(curM.steps.length>1?curM.steps[0].ok.split('.')[0]||curM.objective:curM.objective);
+  focus();
+
+  // Timer
+  clearInterval(mInt);
+  const bonus=hasPerk('time_freeze')?10:0;
+  mTime=0;
+  mInt=setInterval(()=>{mTime++;document.getElementById('mi-timer').textContent=fmtTime(mTime)},1000);
+}
+function fmtTime(s){const m=Math.floor(s/60),sec=s%60;return m+':'+(sec<10?'0':'')+sec}
+function exitMission(){clearInterval(mInt);show('S-hq');buildHQ()}
+
+function addStory(speaker,text){
+  const term=document.getElementById('term');
+  const d=document.createElement('div');d.className='story';
+  d.innerHTML=`<div class="speaker">${speaker}</div>${text}`;
+  term.appendChild(d);term.scrollTop=term.scrollHeight;
+}
+function addObj(text){
+  const term=document.getElementById('term');
+  const d=document.createElement('div');d.className='obj';
+  d.innerHTML='→ <b>'+text+'</b>';
+  term.appendChild(d);term.scrollTop=term.scrollHeight;
+}
+function addLine(cls,text){
+  const term=document.getElementById('term');
+  const d=document.createElement('div');d.className='tl '+cls;d.textContent=text;
+  term.appendChild(d);term.scrollTop=term.scrollHeight;
+}
+function addBlock(lines){
+  const term=document.getElementById('term');
+  const b=document.createElement('div');b.className='out-block';
+  lines.forEach(l=>{const d=document.createElement('div');d.className='tl '+(l.c||'out');d.textContent=l.s;b.appendChild(d)});
+  term.appendChild(b);term.scrollTop=term.scrollHeight;
+}
+function updateHintBtn(){
+  const r=maxH-hints;
+  document.getElementById('hc').textContent=r>0?'('+r+')':'';
+  document.getElementById('hb').disabled=hints>=maxH||stepComplete;
+}
+function focus(){setTimeout(()=>document.getElementById('ci').focus(),100);document.getElementById('ci').value=''}
+
+// ========== INPUT ==========
+document.getElementById('ci').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();submit()}
+});
+
+function submit(){
+  const v=document.getElementById('ci').value.trim();
+  if(!v||!curM||stepComplete)return;
+  const step=curM.steps[curStep];
+  addLine('cmd',v);
+  document.getElementById('ci').value='';
+
+  if(match(v,step.accept)){
+    sfxOk();addLine('blank','');addBlock(step.out);addLine('og',step.ok);addLine('blank','');
+    curStep++;
+    if(curStep>=curM.steps.length){
+      completeMission();
+    } else {
+      addObj(curM.steps[curStep].ok?.split('.')[0]||'Next step');
+      focus();
+    }
+  } else {
+    if(hasPerk('second_chance')&&!S.retryUsed){
+      S.retryUsed=true;
+      addLine('oa','🛡️ Second Chance activated — try again.');
+    } else {
+      sfxWrong();addLine('or','✗ Not quite. Try again or use a hint.');
+    }
+    addLine('blank','');focus();
+  }
+}
+
+function match(input,accepts){
+  const l=input.toLowerCase().trim();
+  for(const p of accepts){
+    const pl=p.toLowerCase();
+    if(pl.includes('*')){
+      const parts=pl.split('*').filter(Boolean);let pos=0,ok=true;
+      for(const pt of parts){const i=l.indexOf(pt,pos);if(i===-1){ok=false;break}pos=i+pt.length}
+      if(ok)return true;
+    } else if(l===pl) return true;
+  }
+  return false;
+}
+
+// ========== HINTS ==========
+function useHint(){
+  if(!curM||hints>=maxH||stepComplete)return;
+  const step=curM.steps[curStep];
+  const h=step.hints[Math.min(hints,step.hints.length-1)];
+  hints++;
+  addLine('hint','💡 '+h);updateHintBtn();focus();
+}
+
+// ========== MISSION COMPLETE ==========
+function completeMission(){
+  stepComplete=true;clearInterval(mInt);
+
+  // Calculate grade & cash
+  const timeBonus=Math.max(0, 120-mTime);
+  const hintPenalty=hints*15;
+  const rawScore=100+timeBonus-hintPenalty;
+  let grade='C';
+  if(rawScore>=160)grade='S';else if(rawScore>=120)grade='A';else if(rawScore>=80)grade='B';
+
+  let cash=curM.baseCash;
+  if(grade==='S')cash=Math.floor(cash*2);
+  else if(grade==='A')cash=Math.floor(cash*1.5);
+  else if(grade==='B')cash=Math.floor(cash*1.2);
+
+  // Streak
+  const streakBonus=S.streak*50*(hasPerk('double_streak')?2:1);
+  cash+=streakBonus;
+  S.streak++;
+  if(S.streak>S.bestStreak)S.bestStreak=S.streak;
+
+  // Perks
+  if(hasPerk('cash_magnet'))cash=Math.floor(cash*1.25);
+  if(grade==='S'&&hasPerk('srank_bonus'))cash+=200;
+
+  // Update state
+  const isNew=!S.grades[curM.num];
+  const prevGrade=S.grades[curM.num]||'';
+  const gradeOrder={S:4,A:3,B:2,C:1};
+  if(!prevGrade||(gradeOrder[grade]||0)>(gradeOrder[prevGrade]||0)){
+    S.grades[curM.num]=grade;
+  }
+  if(isNew)S.done++;
+  if(grade==='S'){S.sRanks++;if(mTime<15)S.fastS=true}
+  if(hints===0)S.noHints++;
+  if(curM.boss)S.boss++;
+  S.cash+=cash;S.totalCash+=cash;
+  S.xp+=curM.baseXP;
+  checkRank();checkAchs();
+  save();
+
+  // Effects
+  if(grade==='S'){sfxS();emit(innerWidth/2,innerHeight*.35,'#f59e0b',40)}
+  else{sfxCash();emit(innerWidth/2,innerHeight*.35,'#22c55e',20)}
+  toast('cash','💵','+$'+cash,grade==='S'?'S-RANK BONUS!':'Mission '+curM.num+' complete');
+
+  // Render completion card
+  const term=document.getElementById('term');
+  const card=document.createElement('div');card.className='mi-done';
+  card.innerHTML=`
+    <div class="done-label">MISSION COMPLETE</div>
+    <div class="done-grade ${grade}">${grade}</div>
+    <div class="done-cash">+$${cash}</div>
+    <div class="done-breakdown">
+      Base: <span>$${curM.baseCash}</span> · Time: <span>${mTime}s</span> · Hints: <span>${hints}</span> · Streak: <span>🔥${S.streak}</span>${streakBonus>0?' · Streak bonus: <span>+$'+streakBonus+'</span>':''}
+    </div>
+  `;
+  term.appendChild(card);
+
+  // Learned
+  const lc=document.createElement('div');lc.className='learned';
+  lc.innerHTML='<h4>WHAT YOU LEARNED</h4><ul>'+curM.learned.map(l=>'<li>'+l+'</li>').join('')+'</ul>';
+  term.appendChild(lc);
+
+  // Nav buttons
+  const nav=document.createElement('div');nav.style.cssText='display:flex;gap:10px;margin-top:14px;justify-content:center';
+  const nextIdx=MISSIONS.findIndex(m=>m.num===curM.num)+1;
+  nav.innerHTML=`<button class="B dim sm" onclick="exitMission()">HQ</button>`;
+  if(nextIdx<MISSIONS.length)nav.innerHTML+=`<button class="B g sm" onclick="startMission(${nextIdx})">NEXT MISSION →</button>`;
+  else nav.innerHTML+=`<span style="color:var(--a);font-size:13px;padding:8px">👑 ALL MISSIONS COMPLETE</span>`;
+  term.appendChild(nav);
+  term.scrollTop=term.scrollHeight;
+  document.getElementById('mi-streak').textContent='🔥'+S.streak;
+}
+
+// ========== LOOP ==========
+let lt=performance.now();
+function loop(t){const dt=Math.min((t-lt)/1000,.05);lt=t;uPts(dt);dPts();requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+
+// ========== BOOT ==========
+if(S.name){ni.value=S.name}
+</script>
+</body>
+</html>
